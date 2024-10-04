@@ -3,6 +3,7 @@ const socket = require("socket.io");
 const http = require("http");
 const { Chess } = require("chess.js");
 const path = require("path");
+require('dotenv').config()
 
 const app = express();
 
@@ -23,7 +24,6 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (uniqueSocket) => {
-    console.log("connected");
     
     if(!players.white) {
         players.white = uniqueSocket.id
@@ -59,12 +59,10 @@ io.on("connection", (uniqueSocket) => {
             io.emit("boardState", chess.fen());
         }
         else{
-            console.log("invalid move : ", move);
             uniqueSocket.emit("invalidMove", move);
         }
         }
     catch(err){
-        console.log(err)
         uniqueSocket.emit("invalid move: ", move)
     }
         
@@ -72,6 +70,6 @@ io.on("connection", (uniqueSocket) => {
 });
 
 
-server.listen(3000, () => {
-    console.log("Listening on port 3000");
+server.listen(process.env.PORT, () => {
+    console.log(`Listening on port ${process.env.PORT}`);
 });
